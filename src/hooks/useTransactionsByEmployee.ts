@@ -16,8 +16,9 @@ export function useTransactionsByEmployee(): TransactionsByEmployeeResult {
           employeeId,
         }
       )
-      if (transactions) {
-        setTransactionsByEmployee(transactions)
+      if (transactions && data) {
+        let newData = transactions.concat(data.filter(transaction => !transactions.some(stored => stored.id === transaction.id)))
+        setTransactionsByEmployee(newData.filter(transaction => transaction.employee.id === employeeId))
       }
       else {
         setTransactionsByEmployee(data)
@@ -28,11 +29,13 @@ export function useTransactionsByEmployee(): TransactionsByEmployeeResult {
   )
 
   const invalidateData = useCallback(() => {
-    if (transactionsByEmployee) {
+    if (transactionsByEmployee && !transactions) {
       setTransactions(transactionsByEmployee)
+    } else if (transactionsByEmployee && transactions) {
+      setTransactions([...transactions, ...transactionsByEmployee.filter(transaction => !transactions.some(stored => stored.id === transaction.id))])
     }
     setTransactionsByEmployee(null)
-  }, [transactionsByEmployee])
+  }, [transactionsByEmployee, transactions])
 
   return { data: transactionsByEmployee, loading, fetchById, invalidateData }
 }

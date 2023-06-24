@@ -8,7 +8,8 @@ export function usePaginatedTransactions(): PaginatedTransactionsResult {
   const [paginatedTransactions, setPaginatedTransactions] = useState<PaginatedResponse<
     Transaction[]
   > | null>(null)
-  const [transactions, setTransactions] = useState<PaginatedResponse<Transaction[]>>()
+  const [transactions, setTransactions] = useState<PaginatedResponse<Transaction[]> | null>()
+
 
   const fetchAll = useCallback(async () => {
     const response = await fetchWithCache<PaginatedResponse<Transaction[]>, PaginatedRequestParams>(
@@ -24,7 +25,9 @@ export function usePaginatedTransactions(): PaginatedTransactionsResult {
       }
 
       if (transactions) {
-        return { data: transactions.data, nextPage: transactions.nextPage }
+        let newData = transactions.data.concat(response.data.filter(transaction => !transactions.data.some(stored => stored.id === transaction.id)))
+        let newPage = newData.length > response.data.length ? transactions.nextPage : response.nextPage
+        return { data: newData, nextPage: newPage }
       }
       else {
         return { data: response.data, nextPage: response.nextPage }
