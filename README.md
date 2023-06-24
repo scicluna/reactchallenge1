@@ -80,6 +80,8 @@ We don't have a real API for this challenge, so we added some utilities to simul
 
 **Actual:** Options dropdown stays in the same position as you scroll the page, losing the reference to the select input
 
+**Solution:** CSS was set to fixed instead of absolute
+
 # Bug 2: Approve checkbox not working
 
 **How to reproduce:**
@@ -89,6 +91,8 @@ We don't have a real API for this challenge, so we added some utilities to simul
 **Expected:** Clicking the checkbox toggles its value
 
 **Actual:** Nothing happens
+
+**Solution:** CSS was set to display: none for the actual checkbox. Changed to be opacity-0 and take up the whole checkbox container.
 
 # Bug 3: Cannot select _All Employees_ after selecting an employee
 
@@ -102,6 +106,8 @@ We don't have a real API for this challenge, so we added some utilities to simul
 **Expected:** All transactions are loaded
 
 **Actual:** The page crashes
+
+**Solution:** Added this line to App.tsx -> newValue.id ? await loadTransactionsByEmployee(newValue.id) : await loadAllTransactions() Allowing us to render by employee or all depending on whether or not there is an ID on the newValue (since the all-employees option has no ID, this was formerly causing an error).
 
 # Bug 4: Clicking on View More button not showing correct data
 

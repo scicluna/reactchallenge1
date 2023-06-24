@@ -9,6 +9,7 @@ export const TransactionPane: TransactionPaneComponent = ({
 }) => {
   const [approved, setApproved] = useState(transaction.approved)
 
+
   return (
     <div className="RampPane">
       <div className="RampPane--content">
@@ -27,7 +28,7 @@ export const TransactionPane: TransactionPaneComponent = ({
             transactionId: transaction.id,
             newValue,
           })
-
+          console.log()
           setApproved(newValue)
         }}
       />

@@ -91,6 +91,8 @@ export function InputSelect<TItem>({
             return <div className="RampInputSelect--dropdown-item">No items</div>
           }
 
+          console.log(items)
+
           return items.map((item, index) => {
             const parsedItem = parseItem(item)
             return (
