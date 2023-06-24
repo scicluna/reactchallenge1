@@ -120,6 +120,8 @@ We don't have a real API for this challenge, so we added some utilities to simul
 
 **Actual:** New transactions replace initial transactions, losing initial transactions
 
+**Solution:** Changed the start of the transactions slice to 0 and the end with -> const end = page * TRANSACTIONS_PER_PAGE + TRANSACTIONS_PER_PAGE. Also changed the conditions for pressing "View more" to include !paginatedTransactions?.nextPage so that if there are no more pages, you can't press it.
+
 # Bug 5: Employees filter not available during loading more data
 
 _This bug has 2 wrong behaviors that will be fixed with the same solution_
@@ -136,6 +138,7 @@ _This bug has 2 wrong behaviors that will be fixed with the same solution_
 
 **Actual:** The filter stops showing "Loading employees.." until `paginatedTransactions` is succeeded
 
+**Solution:** Since isLoading is only used by the Employees Input, I moved the setLoading(false) right below it and before await paginatedTransactionsUtils.fetchAll() Solved part 2 aswell.
 ##### Part 2
 
 **How to reproduce:**
@@ -147,7 +150,6 @@ _This bug has 2 wrong behaviors that will be fixed with the same solution_
 **Expected:** The employees filter should not show "Loading employees..." after clicking **View more**, as employees are already loaded
 
 **Actual:** The employees filter shows "Loading employees..." after clicking **View more** until new transactions are loaded.
-
 # Bug 6: View more button not working as expected
 
 _This bug has 2 wrong behaviors that can be fixed with the same solution. It's acceptable to fix with separate solutions as well._
@@ -176,6 +178,8 @@ _This bug has 2 wrong behaviors that can be fixed with the same solution. It's a
 
 **Actual:** When you reach the end of the data, the **View More** button is still showing and you are still able to click the button. If you click it, the page crashes.
 
+**Solution:** Edited App.tsx to only render the view more button if (transactions !== null && paginatedTransactions?.nextPage). A bit of an edit from a previous solution where i used this logic to disable the view more button. Now it will just dissapear if there are no other pages to load.
+
 # Bug 7: Approving a transaction won't persist the new value
 
 _You need to fix some of the previous bugs in order to reproduce_
@@ -195,6 +199,7 @@ _You need to fix some of the previous bugs in order to reproduce_
 
 **Actual:** In steps 6 and 8, toggled transaction lost the value given in step 2. _(E.g. Social Media Ads Inc is checked again)_
 
+**Solution:** Added statefulness to our custom hooks (usePaginatedTransactions and useTransactionsByEmployee) so that changes persist across searches (instead of being reset to null every time). This solution is done with the assumption that in a real situation our endpoint call to setTransactionApproval will actually change the approval boolean in our database.
 ## Submission
 
 **IMPORTANT:** Before sharing your CodeSandbox, open the `email.txt` file and replace your email on the only line of the file. Don't use any prefix or suffix, just your email.
